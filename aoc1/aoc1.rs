@@ -34,7 +34,7 @@ fn get_number(line: &str, reverse: bool) -> Option<u8> {
                 if i < num.len() {
                     continue;
                 }
-                let slice = &line[i - num_len+1..i+1];
+                let slice = &line[(i - num_len + 1)..(i + 1)];
                 if slice == *num {
                     println!("{i} {slice}");
                     return Some(index as u8);
@@ -75,7 +75,7 @@ fn main() {
         // let chars: Vec<char> = vec![first, last];
         // let num: u16 = chars.into_iter().collect::<String>().parse().unwrap();
         // let num:u16 = String::from(first, last).parse().unwrap();
-        let num:u16 = first as u16 * 10 + last as u16;
+        let num: u16 = first as u16 * 10 + last as u16;
         nums.push(num);
     }
 
