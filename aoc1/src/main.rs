@@ -45,7 +45,7 @@ fn get_number(line: &str, reverse: bool) -> Option<u8> {
     return None;
 }
 fn main() {
-    let filepath = "input.txt";
+    let filepath = "src/input.txt";
     println!("in file {} ", filepath);
 
     let file = fs::read_to_string(filepath);
