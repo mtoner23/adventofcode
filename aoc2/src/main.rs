@@ -7,7 +7,7 @@ struct Balls {
     blue: u32,
 }
 
-const GOALS: Balls = Balls {
+const _GOALS: Balls = Balls {
     red: 12,
     green: 13,
     blue: 14,
