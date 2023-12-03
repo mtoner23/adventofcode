@@ -10,9 +10,7 @@ struct Location {
 fn main() {
     // println!("Hello, world!");
 
-    let filepath = "src/input2.txt";
-    println!("in file {} ", filepath);
-
+    let filepath = "src/input.txt";
     let file = fs::read_to_string(filepath).unwrap();
 
     // let num_regex = Regex::new(r"\d+").unwrap();
@@ -53,10 +51,18 @@ fn main() {
                 }
             }
         }
+        if num.len() != 0 {
+            numbers.last_mut().unwrap().0 = num.parse().unwrap();
+            numbers.last_mut().unwrap().2 = Location {
+                x: line.len() - 1,
+                y: l,
+            };
+        }
         num = "".to_owned();
     }
 
     let mut part_nums: Vec<(usize, Location)> = vec![];
+    let mut sum = 0;
 
     for s in &symbols {
         for n in &numbers {
@@ -81,34 +87,37 @@ fn main() {
                 n.2.y - s.1.y
             };
 
+            // let x0_diff = s.1.x.abs_diff(n.1.x);
+            // let x1_diff = s.1.y.abs_diff(n.2.x);
+            // let y0_diff = s.1.y.abs_diff(n.1.y);
+            // let y1_diff = s.1.y.abs_diff(n.2.y);
+
             if x0_diff <= 1 && y0_diff <= 1 {
                 if !part_nums.contains(&(n.0, n.1.clone())) {
                     // println!("Found Begin: s {:?}, n {:?}", s, n);
                     part_nums.push((n.0, n.1.clone()));
                 } else {
-                    println!("Duplicate: {:?}", n);
+                    // println!("Duplicate: {:?}", n);
                 }
             } else if x1_diff <= 1 && y1_diff <= 1 {
                 if !part_nums.contains(&(n.0, n.1.clone())) {
                     // println!("Found End  : s {:?}, n {:?}", s, n);
                     part_nums.push((n.0, n.1.clone()));
                 } else {
-                    println!("Duplicate: {:?}", n);
+                    // println!("Duplicate: {:?}", n);
                 }
             }
         }
     }
-    for n in &numbers {
-        // println!("{:?}", n);
-    }
+    // for n in &numbers {
+    //     println!("{:?}", n);
+    // }
     // for s in symbols {
     //     println!("{:?}", s);
     // }
-    let mut sum = 0;
     for p in &part_nums {
         sum += p.0;
-        // println!("parts {:?}, sum {sum}", p)
     }
 
-    print!("{sum}");
+    println!("{sum}");
 }
