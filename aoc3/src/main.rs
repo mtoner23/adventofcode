@@ -1,4 +1,4 @@
-use std::fs;
+use std::{error::Error, fs};
 
 #[derive(Debug, PartialEq, Clone)]
 struct Location {
@@ -6,11 +6,11 @@ struct Location {
     y: usize,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     // println!("Hello, world!");
 
     let filepath = "src/input.txt";
-    let file = fs::read_to_string(filepath).unwrap();
+    let file = fs::read_to_string(filepath)?;
 
     // let height = file.lines().count();
     // let width = file.lines().nth(0).unwrap().len();
@@ -95,4 +95,5 @@ fn main() {
     // }
 
     println!("{sum}");
+    return Ok(());
 }
