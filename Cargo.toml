@@ -1,2 +1,2 @@
 [workspace]
-members = ["aoc1", "aoc2", "aoc3", "aoc4", "aoc5"]
+members = ["aoc1", "aoc2", "aoc3", "aoc4", "aoc5", "aoc6"]
