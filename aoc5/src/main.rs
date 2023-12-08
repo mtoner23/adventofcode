@@ -63,9 +63,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     mappings.push(map);
 
-    for m in mappings.iter() {
-        println!("Mappings: {:?}", m);
-    }
+    // for m in mappings.iter() {
+    //     println!("Mappings: {:?}", m);
+    // }
 
     // let mut all_seeds: HashSet<usize> = HashSet::new();
     let mut all_seeds: Vec<(usize, usize)> = vec![];
