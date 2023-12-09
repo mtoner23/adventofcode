@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap()
         .split_whitespace();
 
-    let mut distances = lines
+    let distances = lines
         .next()
         .unwrap()
         .split(":")

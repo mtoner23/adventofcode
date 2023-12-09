@@ -55,13 +55,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("Err can not parse: {line}");
             return Err(Box::new(core::fmt::Error));
         };
-        let N = Node {
+        let n = Node {
             id: captures["id"].to_string(),
             left: captures["left"].to_string(),
             right: captures["right"].to_string(),
         };
         // println!("{:?}", N);
-        all_nodes.push(N);
+        all_nodes.push(n);
     }
 
     let mut start_nodes: Vec<Node> = vec![];
@@ -73,10 +73,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // let mut myNode: Node = find_node(&target_node, &all_nodes);
+    // let mut my_node: Node = find_node(&target_node, &all_nodes);
 
     let mut counts: Vec<usize> = vec![];
-    for myNode in start_nodes.iter_mut() {
+    for my_node in start_nodes.iter_mut() {
         let mut inst = instructions.chars();
         let mut count = 0;
         loop {
@@ -89,9 +89,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
 
             let target_node = if i.unwrap() == 'L' {
-                myNode.left.clone()
+                my_node.left.clone()
             } else {
-                myNode.right.clone()
+                my_node.right.clone()
             };
             // println!("Tar: {}", target_node);
 
@@ -102,9 +102,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // println!("No Z!");
             }
 
-            *myNode = find_node(&target_node, &all_nodes);
+            *my_node = find_node(&target_node, &all_nodes);
 
-            if myNode.id != target_node {
+            if my_node.id != target_node {
                 println!("ERROR Kill Me");
                 return Err(Box::new(core::fmt::Error));
             }

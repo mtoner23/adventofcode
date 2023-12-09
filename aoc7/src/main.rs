@@ -108,7 +108,7 @@ fn create_hand(cards: &str) -> Hand {
     }
 
     println!("chars {:?}, counts {:?}, jokers {}", chars, counts, jokers);
-    let mut max = counts.iter_mut().max();
+    let max = counts.iter_mut().max();
 
     (if let Some(m) = max {
         *m += jokers;
