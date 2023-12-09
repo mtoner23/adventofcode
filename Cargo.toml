@@ -10,4 +10,5 @@ members = [
     "aoc7",
     "aoc8",
     "aoc9",
+    "copy",
 ]

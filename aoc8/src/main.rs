@@ -1,6 +1,6 @@
 use regex::Regex;
 use std::error::Error;
-use std::fs;
+use std::{fs, vec};
 
 #[derive(Debug, Clone)]
 struct Node {
@@ -9,9 +9,22 @@ struct Node {
     right: String,
 }
 
-fn find_node(target: String, nodes: &Vec<Node>) -> Node {
+fn lcm(a: usize, b: usize) -> usize {
+    (a * b) / gcd(a, b)
+}
+
+fn gcd(mut a: usize, mut b: usize) -> usize {
+    while b > 0 {
+        let tmp_a = a;
+        a = b;
+        b = tmp_a % b;
+    }
+    return a;
+}
+
+fn find_node(target: &String, nodes: &Vec<Node>) -> Node {
     for n in nodes {
-        if n.id == target {
+        if n.id == *target {
             return n.clone();
         }
     }
@@ -31,9 +44,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("{}", instructions);
 
     let my_regex =
-        Regex::new(r"(?<id>[A-Z]{3}) = \((?<left>[A-Z]{3}), (?<right>[A-Z]{3})\)").unwrap();
+        Regex::new(r"(?<id>[A-Z0-9]{3}) = \((?<left>[A-Z0-9]{3}), (?<right>[A-Z0-9]{3})\)")
+            .unwrap();
 
-    let mut nodes: Vec<Node> = vec![];
+    let mut all_nodes: Vec<Node> = vec![];
     for line in lines {
         // split1 = line.split("=");
         // id = split1.next().unwrap();
@@ -47,48 +61,66 @@ fn main() -> Result<(), Box<dyn Error>> {
             right: captures["right"].to_string(),
         };
         // println!("{:?}", N);
-        nodes.push(N);
+        all_nodes.push(N);
     }
 
-    let mut target_node: String = "AAA".to_string();
-    let mut myNode: Node = find_node(target_node, &nodes);
-    let mut inst = instructions.chars();
-    let mut count = 0;
-    while true {
-        count += 1;
-        let mut i = inst.next();
-        if i.is_none() {
-            inst = instructions.chars();
-            i = inst.next();
+    let mut start_nodes: Vec<Node> = vec![];
+
+    for node in &all_nodes {
+        if node.id.ends_with("A") {
+            println!("Start: {}", node.id);
+            start_nodes.push(node.clone());
         }
+    }
 
-        // println!("{}", i.unwrap());
+    // let mut myNode: Node = find_node(&target_node, &all_nodes);
 
-        if i.unwrap() == 'L' {
-            target_node = myNode.left.clone();
-        } else {
-            target_node = myNode.right.clone();
-        }
-
-        // println!("{}", target_node);
-
-        if target_node == "ZZZ" {
-            println!("Done! {}", count);
-            return Ok(());
-        }
-
-        for n in &nodes {
-            if n.id == target_node {
-                myNode = n.clone();
-                break;
+    let mut counts: Vec<usize> = vec![];
+    for myNode in start_nodes.iter_mut() {
+        let mut inst = instructions.chars();
+        let mut count = 0;
+        loop {
+            count += 1;
+            // println!("{}", i.unwrap());
+            let mut i = inst.next();
+            if i.is_none() {
+                inst = instructions.chars();
+                i = inst.next();
             }
-        }
 
-        if myNode.id != target_node {
-            println!("ERROR Kill");
-            break;
+            let target_node = if i.unwrap() == 'L' {
+                myNode.left.clone()
+            } else {
+                myNode.right.clone()
+            };
+            // println!("Tar: {}", target_node);
+
+            if target_node.ends_with("Z") {
+                println!("Found a Z!");
+                break;
+            } else {
+                // println!("No Z!");
+            }
+
+            *myNode = find_node(&target_node, &all_nodes);
+
+            if myNode.id != target_node {
+                println!("ERROR Kill Me");
+                return Err(Box::new(core::fmt::Error));
+            }
+            // if count > 10 {
+            //     return Err(Box::new(core::fmt::Error));
+            // }
         }
+        counts.push(count);
     }
 
-    return Err(Box::new(core::fmt::Error));
+    // let ans = counts.iter().fold(1, lcm);
+    let mut ans = 1;
+    for c in counts {
+        ans = lcm(ans, c);
+    }
+    dbg!(ans);
+
+    return Ok(());
 }
