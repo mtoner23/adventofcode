@@ -15,9 +15,9 @@ fn lcm(a: usize, b: usize) -> usize {
 
 fn gcd(mut a: usize, mut b: usize) -> usize {
     while b > 0 {
-        let tmp_a = a;
+        let tmp = a;
         a = b;
-        b = tmp_a % b;
+        b = tmp % b;
     }
     return a;
 }
