@@ -46,6 +46,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc8"
+version = "0.1.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "aoc9"
 version = "0.1.0"
 
