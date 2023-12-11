@@ -1,11 +1,11 @@
 use std::error::Error;
 use std::{fs, vec};
 
-fn get_differences(nums: Vec<isize> ) -> isize {
+fn get_differences(nums: Vec<isize>) -> isize {
     let mut diffs: Vec<isize> = vec![];
     let mut n_list = nums.iter();
     let mut prev = n_list.next().unwrap();
-    for n in n_list{
+    for n in n_list {
         // assert!(n >= prev);
         let diff = n - prev;
         diffs.push(diff);
@@ -13,8 +13,8 @@ fn get_differences(nums: Vec<isize> ) -> isize {
     }
     println!("Diffs {:?}", diffs);
 
-    for d in &diffs{
-        if *d != 0{
+    for d in &diffs {
+        if *d != 0 {
             return diffs.first().unwrap() - get_differences(diffs.clone());
         }
     }
@@ -27,11 +27,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let lines = file.lines();
 
-    let mut predictions:Vec<isize> = vec![];
+    let mut predictions: Vec<isize> = vec![];
     for line in lines {
         let chars = line.split_whitespace();
         let mut numbers = vec![];
-        for num in chars{
+        for num in chars {
             numbers.push(num.parse::<isize>().unwrap());
         }
         println!("In: {:?}", numbers);
