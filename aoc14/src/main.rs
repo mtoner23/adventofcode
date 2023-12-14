@@ -46,7 +46,6 @@ fn tilt_north(grid: &mut Grid) {
 }
 fn tilt_south(grid: &mut Grid) {
     let rows = &mut grid.rows;
-    // println!("{}", grid.height);
     for r in (0..grid.height).rev() {
         for s in (0..grid.width).rev() {
             let symbol = rows[r][s];
@@ -202,7 +201,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("diff {}, index {}", prev_diff, index);
     let mut load = grid.height;
     let mut sum = 0;
-    // print_rows(&prev_grids[index].rows);
+    print_rows(&prev_grids[index].rows);
     for r in &prev_grids[index].rows {
         for c in r {
             if *c == 'O' {

@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fs;
 
 const GALAXY: char = '#';
-const SPACE: char = '.';
+const _SPACE: char = '.';
 
 #[derive(Debug, Clone, PartialEq, Copy)]
 pub struct Location {
@@ -51,8 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
         if empty {
-            // println!("Empty row {l}");
-            row_expands += (MULT - 1);
+            row_expands += MULT - 1;
         }
     }
 
@@ -80,7 +79,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
         if empty {
-            col_expands += (MULT - 1);
+            col_expands += MULT - 1;
         }
     }
 
@@ -91,10 +90,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut dists: Vec<usize> = vec![];
 
     let mut outer_iter = galaxies.iter();
-    let mut inner_iter = galaxies.iter();
 
     while let Some(outer) = outer_iter.next() {
-        inner_iter = outer_iter.clone();
+        let mut inner_iter = outer_iter.clone();
         while let Some(inner) = inner_iter.next() {
             // println!("out: {:?}, in: {:?}", outer, inner);
             let x_diff = (outer.x + outer.x_plus).abs_diff(inner.x + inner.x_plus);
