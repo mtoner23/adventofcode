@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 
@@ -24,7 +23,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut boxes: Vec<Vec<(&str, &str)>> = vec![];
     boxes.resize(256, vec![]);
 
-    let mut outputs: Vec<usize> = vec![];
     for seq in seqs {
         if seq.contains("=") {
             let mut split = seq.split("=");
@@ -42,7 +40,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             if !found {
                 the_box.push((label, number));
             }
-            // boxes.insert(hash, (label, number));
         } else if seq.contains("-") {
             let mut split = seq.split("-");
             let label = split.next().unwrap();
@@ -57,6 +54,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         } else {
             println!("Undecodeable seq: {}", seq);
+            panic!();
         }
     }
     let mut sum = 0;
