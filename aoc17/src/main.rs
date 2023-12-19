@@ -7,6 +7,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let lines = file.lines();
 
+    let start = Coord
+
     for l in lines {
         println!("{}", l);
     }
