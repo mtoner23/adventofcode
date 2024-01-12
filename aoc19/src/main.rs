@@ -8,25 +8,105 @@ struct Instruction {
     rules: Vec<String>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 struct Range {
     start: usize,
     end: usize,
 }
 
+impl Range {
+    fn new(start: usize, end: usize) -> Self {
+        Range { start, end }
+    }
+
+    fn split(&self, value: usize, dir: bool) -> (Self, Self) {
+        if dir {
+            (
+                Range::new(self.start, value),
+                Range::new(value + 1, self.end),
+            )
+        } else {
+            (
+                Range::new(value, self.end),
+                Range::new(self.start, value - 1),
+            )
+        }
+    }
+
+    fn len(&self) -> usize {
+        return self.end - self.start + 1;
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+struct PartRange {
+    x: Range,
+    m: Range,
+    a: Range,
+    s: Range,
+}
+
+impl PartRange {
+    fn split(&self, value: usize, dir: bool, letter: &str) -> (Self, Self) {
+        match letter {
+            "x" => {
+                let ranges = self.x.split(value, dir);
+                let mut left = self.clone();
+                let mut right = self.clone();
+                left.x = ranges.0;
+                right.x = ranges.1;
+                (left, right)
+            }
+            "m" => {
+                let ranges = self.m.split(value, dir);
+                let mut left = self.clone();
+                let mut right = self.clone();
+                left.m = ranges.0;
+                right.m = ranges.1;
+                (left, right)
+            }
+            "a" => {
+                let ranges = self.a.split(value, dir);
+                let mut left = self.clone();
+                let mut right = self.clone();
+                left.a = ranges.0;
+                right.a = ranges.1;
+                (left, right)
+            }
+            "s" => {
+                let ranges = self.s.split(value, dir);
+                let mut left = self.clone();
+                let mut right = self.clone();
+                left.s = ranges.0;
+                right.s = ranges.1;
+                (left, right)
+            }
+            _ => panic!(),
+        }
+    }
+
+    fn power(&self) -> usize {
+        return self.x.len() * self.m.len() * self.a.len() * self.s.len();
+    }
+}
+
+// fn traverse_rule(insts: &)  -> Vec<PartRange>{
+
+// }
+
 fn main() -> Result<(), Box<dyn Error>> {
-    let filepath = "src/test.txt";
+    let filepath = "src/input.txt";
     let file = fs::read_to_string(filepath)?;
 
     let mut lines = file.lines();
 
     let inst_regex = Regex::new(r"(?<inst>\w+)\{(?<rules>.+)\}").unwrap();
-    let obj_rejex = Regex::new(r"\{x=(\d+),m=(\d+),a=(\d+),s=(\d+)\}").unwrap();
+    let _obj_rejex = Regex::new(r"\{x=(\d+),m=(\d+),a=(\d+),s=(\d+)\}").unwrap();
 
     let mut instructions: Vec<Instruction> = vec![];
 
     while let Some(l) = lines.next() {
-        println!("{}", l);
+        // println!("{}", l);
 
         if l.len() == 0 {
             break;
@@ -56,115 +136,98 @@ fn main() -> Result<(), Box<dyn Error>> {
         instructions.push(inst);
     }
 
-    let mut count: u64 = 0;
-
-    let mut x = vec![Range {
+    let start_range = Range {
         start: 1,
         end: 4000,
-    }];
-    let mut m = x.clone();
-    let mut a = x.clone();
-    let mut s = x.clone();
+    };
 
-    // for x in 1..4000 {
-    //     for m in 1..4000 {
-    //         for a in 1..4000 {
-    //             for s in 1..4000 {
-    loop {
-        // while let Some(l) = lines.next() {
-        //     let Some(captures) = obj_rejex.captures(l) else {
-        //         println!("Err can not regex: {l}");
-        //         return Err(Box::new(core::fmt::Error));
-        //     };
-        //     let (x, m, a, s) = (
-        //         &captures[1].parse::<usize>().unwrap(),
-        //         &captures[2].parse::<usize>().unwrap(),
-        //         &captures[3].parse::<usize>().unwrap(),
-        //         &captures[4].parse::<usize>().unwrap(),
-        //     );
+    let mut all_parts: Vec<(PartRange, String)> = vec![(
+        PartRange {
+            x: start_range.clone(),
+            m: start_range.clone(),
+            a: start_range.clone(),
+            s: start_range.clone(),
+        },
+        "in".to_string(),
+    )];
 
-        // println!("x {:?}, m {:?}, a {:?}, s {:?}", x, m, a, s);
+    let mut accept_parts: Vec<PartRange> = vec![];
 
-        let mut start = instructions.iter().find(|x| x.name == "in").unwrap();
+    while let Some((mut part, name)) = all_parts.pop() {
+        println!("Part: {:?}, Name: {:?}", part, name);
+        let start = instructions.iter().find(|x| x.name == name).unwrap();
+        for rule in &start.rules {
+            if rule.contains(":") {
+                let mut split = rule.split(":");
+                let comp = split.next().unwrap();
+                let dest = split.next().unwrap();
 
-        loop {
-            let mut end = false;
-            for rule in &start.rules {
-                if rule.contains(":") {
-                    let mut split = rule.split(":");
-                    let comp = split.next().unwrap();
-                    let dest = split.next().unwrap();
-                    let (mut split_comp, dir) = if comp.contains(">") {
-                        (comp.split(">"), true)
-                    } else {
-                        (comp.split("<"), false)
-                    };
-
-                    let letter = split_comp.next().unwrap();
-                    let value = split_comp.next().unwrap().parse::<usize>()?;
-
-                    // println!("{letter} {} {value}:{dest}", (if dir { ">" } else { "<" }));
-
-                    let decision;
-                    if dir {
-                        let ranges = match letter {
-                            "x" => &mut x,
-                            "m" => &mut m,
-                            "a" => &mut a,
-                            "s" => &mut s,
-                            _ => panic!(),
-                        };
-
-                        while let Some(r) = ranges.pop() {
-                            
-                        }
-                    } else {
-                        decision = match letter {
-                            "x" => x < value,
-                            "m" => m < value,
-                            "a" => a < value,
-                            "s" => s < value,
-                            _ => panic!(),
-                        };
-                    }
-                    if decision {
-                        if dest == "A" {
-                            // println!("Accepted");
-                            count += 1;
-                            end = true;
-                        } else if dest == "R" {
-                            // println!("Rejected");
-                            end = true;
-                        } else {
-                            start = instructions.iter().find(|x| x.name == dest).unwrap();
-                            // println!("next dest {}", start.name);
-                        }
-                        break;
-                    }
-                } else if rule == "A" {
-                    // println!("Accepted");
-                    count += 1;
-                    end = true;
-                    break;
-                } else if rule == "R" {
-                    // println!("Rejected");
-                    end = true;
-                    break;
+                let (mut split_comp, dir) = if comp.contains(">") {
+                    (comp.split(">"), true)
                 } else {
-                    start = instructions
-                        .iter()
-                        .find(|x| x.name == rule.as_str())
-                        .unwrap();
-                    // println!("next dest {}", start.name);
+                    (comp.split("<"), false)
+                };
+
+                let letter = split_comp.next().unwrap();
+                let value = split_comp.next().unwrap().parse::<usize>()?;
+
+                // println!("{letter} {} {value}:{dest}", (if dir { ">" } else { "<" }));
+
+                let range = match letter {
+                    "x" => &part.x,
+                    "m" => &part.m,
+                    "a" => &part.a,
+                    "s" => &part.s,
+                    _ => panic!(),
+                };
+
+                // println!("{rule}, range {:?}", range);
+                if (dir && (range.start > value)) || (!dir && (range.end < value)) {
+                    // println!("Entire range passes  rule");
+
+                    if dest == "A" {
+                        accept_parts.push(part.clone());
+                    } else if dest == "R" {
+                        // println!("Rejected whole, range {:?}", range);
+                    } else {
+                        // start = instructions.iter().find(|x| x.name == dest).unwrap();
+                        all_parts.push((part.clone(), dest.to_string()));
+                        // println!("next all_parts {}", start.name);
+                    }
+                } else if (dir && (range.end < value)) || (!dir && (range.start > value)) {
+                    println!("Entire range not in rule");
+                } else {
+                    let (failed, passed) = part.split(value, dir, letter);
+                    // println!("Range split!\nPass {:?},\nFail {:?}", passed, failed);
+                    if dest == "A" {
+                        accept_parts.push(passed.clone());
+                    } else if dest == "R" {
+                        // println!("Rejected, range {:?}", range);
+                    } else {
+                        all_parts.push((passed, dest.to_string()));
+                    }
+                    part = failed;
                 }
+            } else if rule == "A" {
+                // println!("Accepted, no rule");
+                accept_parts.push(part.clone());
+            } else if rule == "R" {
+                // println!("Rejected, no rule");
+            } else {
+                // println!("Next {}, no rule", rule);
+                all_parts.push((part.clone(), rule.to_string()));
             }
-            if end {
-                break;
-            }
-            // break;
         }
     }
-    println!("Sum: {}", count);
+
+    let mut sum: usize = 0;
+    for p in accept_parts {
+        // println!("Accepted: {:?}", p);
+
+        sum += p.power();
+    }
+
+    println!("Sum: {}", sum);
 
     return Ok(());
 }
