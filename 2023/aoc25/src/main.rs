@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             edges.insert((id, v));
         }
     }
-    let mut graph = UnGraphMap::<&str, ()>::from_edges(edges);
+    let graph = UnGraphMap::<&str, ()>::from_edges(edges);
     dbg!(&graph);
 
     let Ok(Some((_, group))) = swmc(&graph, |_| Ok::<_, ()>(1)) else {
