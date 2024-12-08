@@ -47,6 +47,13 @@ name = "aoc7"
 version = "0.1.0"
 
 [[package]]
+name = "aoc8"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
 name = "crossbeam-deque"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
