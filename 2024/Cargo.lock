@@ -23,6 +23,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc11"
+version = "0.1.0"
+dependencies = [
+ "count-digits",
+]
+
+[[package]]
 name = "aoc2"
 version = "0.1.0"
 
@@ -63,6 +70,12 @@ dependencies = [
 [[package]]
 name = "aoc9"
 version = "0.1.0"
+
+[[package]]
+name = "count-digits"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9c7f4086dd64c9d7e5e5957af4599fd1329314df9f3856acf677b96502e9aa7"
 
 [[package]]
 name = "crossbeam-deque"
