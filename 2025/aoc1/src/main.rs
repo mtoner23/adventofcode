@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fs;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let filepath = "src/test2.txt";
+    let filepath = "src/input.txt";
     let file = fs::read_to_string(filepath)?;
 
     let lines = file.lines();
@@ -12,51 +12,70 @@ fn main() -> Result<(), Box<dyn Error>> {
     for l in lines {
         println!("{}", l);
         let mut chars = l.chars();
-        let mut direction = true;
+        let direction;
         if chars.next().unwrap() == 'L' {
-            // print!("Left ");
             direction = false;
         } else {
-            // print!("Right ");
             direction = true;
         }
 
-        let mut value = chars.collect::<String>().parse::<i32>().unwrap();
-        while true{
-        if direction {
-            if dial + value > 99 {
-                count += 1
-                if value > 100{
-                    value = value - 100
-                }else{
+        let value_orig = chars.collect::<String>().parse::<i32>().unwrap();
+
+        let mut dial_orig = dial;
+        let mut value = value_orig;
+        loop {
+            // had to go the pedantic while loop route b/c my modulo math kept hitting edge cases
+            if direction {
+                if dial + value > 99 {
+                    count += 1;
+                    if value > 99 {
+                        value -= 100
+                    } else {
+                        dial = (dial + value).rem_euclid(100);
+                        break;
+                    }
+                } else {
+                    dial += value;
+                    break;
+                }
+            } else {
+                if dial - value < 0 {
+                    if value > 99 {
+                        count += 1;
+                        value -= 100;
+                    } else {
+                        if dial != 0 {
+                            // This really threw a wrench in my thought process
+                            count += 1;
+                        }
+                        dial = (dial - value).rem_euclid(100);
+                        break;
+                    }
+                } else {
+                    dial -= value;
+                    if dial == 0 {
+                        count += 1;
+                        // println!("ZERO");
+                    }
                     break;
                 }
             }
-            dial += value % 100;
-        } else {
-            dial -= value;
+            // println!("Dial {}, Count: {}", dial, count);
         }
-    }
+        println!("Final Dial {}, Count: {}", dial, count);
+        if direction {
+            dial_orig += value_orig;
+        } else {
+            dial_orig -= value_orig;
+        }
 
-        // if dial > 99 {
-        //     count += dial / 100;
-        //     println!("Dial: {}, Count: {}", dial.rem_euclid(100), count);
-        //     dial = dial.rem_euclid(100);
-        // } else if dial < 0 {
-        //     count += dial / 100;
-        //     if dial % 100 != 0 {
-        //         count += 1;
-        //     }
-        //     println!("Dial: {}, Count: {}", dial.rem_euclid(100), count);
-        //     dial = dial.rem_euclid(100);
-        // } else {
-        //     println!("Dial {}, Count: {}", dial, count);
-        // }
-
-        // if dial == 0 {
-        //     count += 1;
-        //     println!("Count++");
-        // }
+        if dial_orig.rem_euclid(100) != dial {
+            println!(
+                "ERROR! final dial != calculated value. {} != {}",
+                dial,
+                dial_orig.rem_euclid(100)
+            );
+        }
     }
 
     println!("Count: {}", count);
