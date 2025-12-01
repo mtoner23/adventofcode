@@ -1,3 +1,3 @@
-re# Toner's Advent of code solutions!
+# Toner's Advent of code solutions!
 
 Learning to write rust via this challenge
