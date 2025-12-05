@@ -1,4 +1,3 @@
-use core::num;
 use std::error::Error;
 use std::fs;
 
@@ -14,42 +13,43 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("{}", l);
         let chars: Vec<char> = l.chars().collect();
 
-        let mut maximums: Vec<(char, usize)> = Vec::new();
+        // let mut maximums: Vec<char> = Vec::new();
         let num_values = 12;
-        let prev_max_value = 0;
+        let mut start_pos = 0;
         let length = chars.len();
+        let mut number: i64 = 0;
 
-        for (pos, c) in chars[(prev_max_value)..(length - num_values)]
-            .iter()
-            .enumerate()
-        {
-            if let Some(digit) = c.to_digit(10) {
-                if find_1.is_none() || digit > find_1.unwrap().0.to_digit(10).unwrap_or(0) {
-                    find_1 = Some((*c, pos));
+        for i in 0..num_values {
+            let mut find: Option<(char, usize)> = None;
+
+            println!(
+                "Loop! Start pos: {}, end pos {}",
+                start_pos,
+                length - num_values + i + 1
+            );
+
+            for (pos, c) in chars[(start_pos)..(length - num_values + i + 1)]
+                .iter()
+                .enumerate()
+            {
+                // println!("Checking char: {} at pos {},", c, pos + start_pos);
+                if let Some(digit) = c.to_digit(10) {
+                    if find.is_none() || digit > find.unwrap().0.to_digit(10).unwrap_or(0) {
+                        find = Some((*c, pos + start_pos));
+                    }
                 }
             }
+            let (max, pos) = find.expect("No max digit found in line");
+            println!("Max: {} at position {}", max, pos);
+            start_pos = pos + 1;
+
+            // maximums.push(max);
+            number = (number * 10) + max.to_digit(10).unwrap() as i64;
         }
 
-        let (max_char, pos) = find_1.expect("No max digit found in line");
-
-        println!("Max: {} at position {}", max_char, pos);
-
-        for (pos_2, c) in chars[(pos + 1)..].iter().enumerate() {
-            // println!("Checking char: {} at pos {}", c, pos_2);
-            if let Some(digit) = c.to_digit(10) {
-                if find_2.is_none() || digit > find_2.unwrap().0.to_digit(10).unwrap_or(0) {
-                    find_2 = Some((*c, pos_2 + pos + 1));
-                    // println!("New max found: {} at pos {}", c, pos_2 + pos + 1);
-                }
-            }
-        }
-
-        let (max_char_2, pos_2) = find_2.expect("No max digit found in line");
-
-        println!("Max: {} at position {}", max_char_2, pos_2);
-        let num = (max_char.to_digit(10).unwrap() * 10 + max_char_2.to_digit(10).unwrap()) as i64;
-
-        sum += num;
+        // println!("Maximums: {:?}", maximums);
+        println!("Number: {}", number);
+        sum += number;
     }
 
     println!("Sum: {}", sum);
