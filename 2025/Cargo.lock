@@ -28,11 +28,15 @@ name = "aoc3"
 version = "0.1.0"
 
 [[package]]
-<<<<<<< HEAD
-name = "aoc6"
-=======
 name = "aoc4"
->>>>>>> ff26e65 (init again)
+version = "0.1.0"
+
+[[package]]
+name = "aoc5"
+version = "0.1.0"
+
+[[package]]
+name = "aoc6"
 version = "0.1.0"
 
 [[package]]
