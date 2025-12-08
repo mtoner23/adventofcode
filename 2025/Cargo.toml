@@ -3,5 +3,6 @@ members = [
     "aoc1",
     "aoc2",
     "aoc3",
+    "aoc6",
 ]
 resolver = "2"
