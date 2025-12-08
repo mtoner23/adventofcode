@@ -34,6 +34,9 @@ version = "0.1.0"
 [[package]]
 name = "aoc5"
 version = "0.1.0"
+dependencies = [
+ "regex",
+]
 
 [[package]]
 name = "aoc6"
