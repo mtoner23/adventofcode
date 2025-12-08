@@ -1,4 +1,3 @@
-use core::num;
 use std::error::Error;
 use std::fs;
 
@@ -42,7 +41,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("{}", l);
         let mut idx = 0;
         let mut idx_vec = 0;
-        // let mut this_len = lengths[idx_vec]
         if l_idx >= num_lines {
             // println!("Reached operaters!");
             break;
@@ -52,25 +50,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                 idx = 0;
                 idx_vec += 1;
                 continue;
-                // this_len = lengths[idx_vec];
             }
-            // println!(
-            //     "assigning cols [{}][{}][{}], c = {}",
-            //     idx_vec, idx, l_idx, c
-            // );
+
             cols[idx_vec][idx][l_idx] = c;
             idx += 1;
         }
     }
 
     println!("{:?}", cols);
-
-    // println!("cols: {:?}", cols);
-    // println!("ops: {:?}", ops);
-
-    // results = cols[0].clone();
-
-    // let num: i32 = chars.iter().collect::<String>().parse().unwrap();
 
     let mut i = 0;
     for col in cols {
