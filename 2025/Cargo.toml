@@ -9,5 +9,6 @@ members = [
     "aoc7",
     "aoc8",
     "aoc9",
+    "aoc10",
 ]
 resolver = "2"
